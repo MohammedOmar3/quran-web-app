@@ -1,23 +1,34 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import axios from 'axios';
 
-function App() {
+const App = () => {
+  // useState hook to manage state for the Quran data
+  const [ayah, setAyah] = useState('');
+
+  // useEffect hook to fetch Quran data after the component is mounted
+  useEffect(() => {
+    FetchQuran();
+  }, []); // The empty array makes this run only once, similar to componentDidMount
+
+  // Function to fetch Quran data using axios
+  function FetchQuran() {
+    axios.get('http://api.alquran.cloud/v1/quran/quran-uthmani')
+      .then((response) => {
+        console.log('API Response:', response.data);
+        // Optionally set the data to a state variable if needed
+        setAyah(response.data); // Set the fetched data to state
+      })
+      .catch((error) => {
+        console.log('Error fetching Quran:', error);
+      });
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Quran Data</h1>
+      {/* Render fetched Quran data */}
+      <pre>{JSON.stringify(ayah, null, 2)}</pre>
     </div>
   );
 }
